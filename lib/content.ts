@@ -68,7 +68,6 @@ export const projects: Project[] = [
     monogram: "W",
     logo: "/walltch.png",
     logoStyle: "mark",
-    featured: true,
   },
 ];
 

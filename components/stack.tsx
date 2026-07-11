@@ -37,16 +37,16 @@ export function Stack() {
       </Reveal>
 
       <Reveal delay={0.08}>
-        <ul className="mt-8 flex flex-wrap gap-3">
+        <ul className="mt-8 grid grid-cols-4 gap-3 sm:grid-cols-8">
           {stack.map(({ name, icon: Icon, color }) => (
             <li key={name}>
               <Tooltip>
                 <TooltipTrigger
                   aria-label={name}
                   style={{ "--brand": color } as React.CSSProperties}
-                  className="group grid size-14 place-items-center rounded-2xl bg-secondary text-muted-foreground transition-colors hover:bg-secondary/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="group grid aspect-square w-full place-items-center rounded-2xl bg-secondary text-muted-foreground transition-colors hover:bg-secondary/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
-                  <Icon className="size-6 transition-colors group-hover:text-(--brand)" />
+                  <Icon className="size-7 transition-colors group-hover:text-(--brand)" />
                 </TooltipTrigger>
                 <TooltipContent side="bottom">{name}</TooltipContent>
               </Tooltip>
