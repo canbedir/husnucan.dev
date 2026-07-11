@@ -1,157 +1,131 @@
 "use client";
 
-import * as React from "react";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-import type { ContributionCell } from "@/lib/github";
+import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { FaGithub } from "react-icons/fa";
 
-const DAYS = 7;
-
-// Tailwind classes per intensity level, tuned for both themes.
-const LEVEL_CLASS = [
-  "bg-[#ebedf0] dark:bg-[#1c1c1c]",
-  "bg-[#9be9a8] dark:bg-[#0e4429]",
-  "bg-[#40c463] dark:bg-[#006d32]",
-  "bg-[#30a14e] dark:bg-[#26a641]",
-  "bg-[#216e39] dark:bg-[#39d353]",
-];
-
-/** Deterministic pseudo-random in [0,1) so server and client render alike. */
-function hash(i: number) {
-  const x = Math.sin(i * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-}
-
-function seededLevel(i: number) {
-  const f = hash(i);
-  if (f < 0.55) return 0;
-  if (f < 0.74) return 1;
-  if (f < 0.88) return 2;
-  if (f < 0.96) return 3;
-  return 4;
-}
-
-function seededCount(i: number, level: number) {
-  if (level === 0) return 0;
-  return level * 3 + (Math.floor(hash(i + 1) * 6) - 2);
-}
-
-type Cell = {
-  i: number;
-  week: number;
-  level: number;
+type ContributionDay = {
+  date: string;
   count: number;
-  date: string | null;
-  empty: boolean;
+  level: 0 | 1 | 2 | 3 | 4;
 };
 
-type Tip = { text: string; x: number; y: number };
+type ContributionsResponse = {
+  total?: Record<string, number>;
+  contributions?: ContributionDay[];
+};
 
-const SEEDED_WEEKS = 53;
+const USERNAME = "canbedir";
 
-export function ContributionGraph({ data }: { data?: ContributionCell[] | null }) {
-  const [tip, setTip] = React.useState<Tip | null>(null);
+// Emerald intensity scale, tuned for both themes.
+const LEVEL_CLASS = [
+  "bg-zinc-200 dark:bg-[#1a1d20]",
+  "bg-emerald-100 dark:bg-[#064e3b]",
+  "bg-emerald-300 dark:bg-[#047857]",
+  "bg-emerald-500 dark:bg-[#10b981]",
+  "bg-emerald-600 dark:bg-[#34d399]",
+] as const;
+
+export function ContributionGraph() {
+  const [activity, setActivity] = useState<ContributionsResponse | null>(null);
+  // Number of week columns is derived from the container width, so cells keep
+  // a consistent size and always fill the row without needing to scroll.
+  const [visibleWeeks, setVisibleWeeks] = useState(20);
+  const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
 
-  // Grid fills column by column (grid-flow-col): index = week * 7 + day.
-  const cells = React.useMemo<Cell[]>(() => {
-    if (data && data.length) {
-      return data.map((cell, i) => ({
-        i,
-        week: Math.floor(i / DAYS),
-        level: cell?.level ?? 0,
-        count: cell?.count ?? 0,
-        date: cell?.date ?? null,
-        empty: cell === null,
-      }));
-    }
-    return Array.from({ length: SEEDED_WEEKS * DAYS }, (_, i) => {
-      const level = seededLevel(i);
-      return {
-        i,
-        week: Math.floor(i / DAYS),
-        level,
-        count: seededCount(i, level),
-        date: null,
-        empty: false,
-      };
-    });
-  }, [data]);
+  useEffect(() => {
+    let active = true;
 
-  const weekCount = cells.length / DAYS;
+    fetch(`https://github-contributions-api.jogruber.de/v4/${USERNAME}?y=last`)
+      .then((res) => res.json())
+      .then((data: ContributionsResponse) => {
+        if (active) setActivity(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching GitHub contributions:", error);
+        if (active) setActivity({ contributions: [] });
+      });
 
-  // Each cell lights up with a delay tied to its column, producing a
-  // left-to-right sweep across the grid.
-  const cellVariants: Variants = {
-    hidden: { opacity: 0, scale: reduceMotion ? 1 : 0.4 },
-    visible: (week: number) => ({
-      opacity: 1,
-      scale: 1,
-      transition: {
-        delay: reduceMotion ? 0 : week * 0.02,
-        duration: 0.35,
-        ease: "easeOut",
-      },
-    }),
-  };
+    return () => {
+      active = false;
+    };
+  }, []);
 
-  const showTip = (e: React.MouseEvent<HTMLDivElement>, cell: Cell) => {
-    if (cell.empty) return;
+  useEffect(() => {
+    const update = () => {
+      const width = containerRef.current?.offsetWidth;
+      if (!width) return;
+      setVisibleWeeks(Math.max(10, Math.min(Math.floor((width + 4) / 16), 52)));
+    };
 
-    let iso = cell.date;
-    if (!iso) {
-      // Seeded fallback: derive a date from the cell's position.
-      const day = cell.i % DAYS;
-      const daysAgo = (weekCount - 1 - cell.week) * DAYS + (DAYS - 1 - day);
-      const d = new Date();
-      d.setHours(0, 0, 0, 0);
-      d.setDate(d.getDate() - daysAgo);
-      iso = d.toISOString().slice(0, 10);
-    }
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, [activity]);
 
-    const noun = cell.count === 1 ? "contribution" : "contributions";
-    const rect = e.currentTarget.getBoundingClientRect();
-    setTip({
-      text: `${cell.count} ${noun} on ${iso}`,
-      x: rect.left + rect.width / 2,
-      y: rect.top,
-    });
-  };
+  const days = (activity?.contributions ?? []).slice(-(7 * visibleWeeks));
+  const weeks: ContributionDay[][] = [];
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
+
+  const loading = activity === null;
+  const total = activity?.total
+    ? Object.values(activity.total).reduce((sum, count) => sum + count, 0)
+    : 0;
 
   return (
-    <div className="relative">
-      <div className="overflow-x-auto pb-1">
-        <motion.div
-          className="mx-auto grid w-fit grid-flow-col grid-rows-7 gap-0.75"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-40px" }}
-          onMouseLeave={() => setTip(null)}
-        >
-          {cells.map((cell) => (
-            <motion.div
-              key={cell.i}
-              custom={cell.week}
-              variants={cellVariants}
-              onMouseEnter={(e) => showTip(e, cell)}
-              className={
-                cell.empty
-                  ? "size-3 rounded-[3px] bg-transparent"
-                  : `size-3 rounded-[3px] ${LEVEL_CLASS[cell.level]}`
-              }
-            />
-          ))}
-        </motion.div>
+    <div ref={containerRef} className="w-full">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <FaGithub className="size-4" />
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+            GitHub Activity
+          </span>
+        </div>
+        {total > 0 && (
+          <span className="text-xs text-muted-foreground">
+            {total.toLocaleString()} contributions this year
+          </span>
+        )}
       </div>
 
-      {tip && (
-        <div
-          role="tooltip"
-          style={{ left: tip.x, top: tip.y }}
-          className="pointer-events-none fixed z-50 -translate-x-1/2 -translate-y-[calc(100%+8px)] whitespace-nowrap rounded-md bg-foreground px-2.5 py-1 text-xs font-medium text-background shadow-sm"
-        >
-          {tip.text}
-        </div>
-      )}
+      <div className="flex justify-between gap-1">
+        {loading
+          ? Array.from({ length: visibleWeeks }).map((_, weekIndex) => (
+              <div key={weekIndex} className="flex flex-1 flex-col gap-1">
+                {Array.from({ length: 7 }).map((_, dayIndex) => (
+                  <div
+                    key={dayIndex}
+                    className="aspect-square w-full animate-pulse rounded-sm bg-zinc-200 dark:bg-[#1a1d20]"
+                  />
+                ))}
+              </div>
+            ))
+          : weeks.map((week, weekIndex) => (
+              <motion.div
+                key={weekIndex}
+                className="flex flex-1 flex-col gap-1"
+                initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.4 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{
+                  delay: reduceMotion ? 0 : weekIndex * 0.025,
+                  duration: 0.3,
+                  ease: "easeOut",
+                }}
+              >
+                {week.map((day) => (
+                  <div
+                    key={day.date}
+                    title={`${day.count} contributions on ${day.date}`}
+                    className={`aspect-square w-full rounded-sm transition-transform hover:scale-110 ${LEVEL_CLASS[day.level]}`}
+                  />
+                ))}
+              </motion.div>
+            ))}
+      </div>
     </div>
   );
 }

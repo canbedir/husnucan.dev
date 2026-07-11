@@ -1,15 +1,12 @@
 import { ContributionGraph } from "@/components/contribution-graph";
 import { Reveal } from "@/components/motion/reveal";
-import { getContributions } from "@/lib/github";
 import { profile } from "@/lib/content";
 
-export async function SiteFooter() {
-  const contributions = await getContributions();
-
+export function SiteFooter() {
   return (
     <footer className="px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
-      <Reveal className="mx-auto max-w-4xl">
-        <ContributionGraph data={contributions} />
+      <Reveal className="mx-auto max-w-2xl">
+        <ContributionGraph />
         <p className="mt-12 text-center">
           <a
             href={`mailto:${profile.email}`}

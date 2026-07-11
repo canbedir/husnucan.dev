@@ -11,7 +11,6 @@ export function Hero() {
             src={profile.avatar}
             alt={profile.name}
             fill
-            sizes="96px"
             priority
             className="object-cover"
           />
