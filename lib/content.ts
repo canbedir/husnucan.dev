@@ -14,8 +14,16 @@ export type Project = {
   /** Public repo stats, shown only when provided. */
   stars?: number;
   forks?: number;
-  /** Single letter used for the generated monogram logo. */
+  /** Single letter used as a fallback when no logo image is set. */
   monogram: string;
+  /** Logo image in /public. */
+  logo?: string;
+  /**
+   * How the logo should sit in its box:
+   * - "icon": a full-bleed app icon with its own background (fills the box)
+   * - "mark": a transparent mark that needs a surface and padding behind it
+   */
+  logoStyle?: "icon" | "mark";
   /** Surfaced in the homepage Spotlight section. */
   featured?: boolean;
 };
@@ -24,21 +32,26 @@ export const projects: Project[] = [
   {
     slug: "kirmizi",
     name: "Kırmızı",
-    description: "A focused app for tracking what matters, without the clutter.",
+    description: "Record your screen entirely in the browser.",
     year: "2025",
     url: "https://kirmizi.app",
     badge: { label: "Live", tone: "accent" },
     monogram: "K",
+    logo: "/kirmizi-logo.webp",
+    logoStyle: "mark",
     featured: true,
   },
   {
     slug: "microhone",
     name: "Microhone",
-    description: "A small tool built around a big idea. Fast, simple, shipped.",
+    description:
+      "Use your phone as a microphone for your computer over Wi-Fi or USB.",
     year: "2024",
     url: "https://microhone.com",
     badge: { label: "Live", tone: "accent" },
     monogram: "M",
+    logo: "/microhone.png",
+    logoStyle: "icon",
     featured: true,
   },
 ];
