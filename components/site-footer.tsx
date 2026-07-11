@@ -7,7 +7,7 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border">
+    <footer className="relative z-50 border-t border-border bg-background">
       <Container className="flex h-16 items-center justify-between text-xs text-muted-foreground sm:text-sm">
         <span>
           © {year} {profile.shortName}

@@ -51,6 +51,12 @@ export default function RootLayout({
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />
+            {/* Soft fade so content dissolves into the background at the
+                bottom edge of the viewport. */}
+            <div
+              aria-hidden
+              className="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-24 bg-linear-to-t from-background to-transparent"
+            />
           </TooltipProvider>
         </ThemeProvider>
       </body>
