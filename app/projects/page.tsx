@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Calendar } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { SiGithub } from "react-icons/si";
 import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
