@@ -37,7 +37,7 @@ export function Spotlight() {
       <Reveal>
         <h2 className="text-2xl font-bold tracking-tight">Spotlight</h2>
         <p className="mt-2 text-muted-foreground">
-          Recent shipped work and the tools I keep coming back to.
+          My pride and joy — the projects I care about a little too much.
         </p>
       </Reveal>
 
