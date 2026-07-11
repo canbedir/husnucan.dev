@@ -18,10 +18,10 @@ export function Experience() {
           className="absolute left-0 top-2 h-[calc(100%-1rem)] w-px bg-border"
         />
         <ol className="space-y-10">
-          <Reveal as="li">
+          <Reveal as="li" className="relative">
             <span
               aria-hidden
-              className="absolute -left-px top-1.5 flex -translate-x-1/2"
+              className="absolute -left-7 top-1.5 flex -translate-x-1/2"
             >
               <span className="absolute inline-flex size-2.5 animate-ping rounded-full bg-emerald-500 opacity-75 motion-reduce:animate-none" />
               <span className="relative block size-2.5 rounded-full bg-emerald-500 ring-4 ring-background" />
@@ -37,10 +37,11 @@ export function Experience() {
               as="li"
               key={`${item.company}-${item.period}`}
               delay={(i + 1) * 0.08}
+              className="relative"
             >
               <span
                 aria-hidden
-                className="absolute -left-px top-1.5 -translate-x-1/2"
+                className="absolute -left-7 top-1.5 -translate-x-1/2"
               >
                 <span className="block size-2.5 rounded-full bg-foreground ring-4 ring-background" />
               </span>

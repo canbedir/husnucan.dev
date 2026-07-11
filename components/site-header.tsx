@@ -19,7 +19,7 @@ export function SiteHeader() {
             href="/"
             className={cn(
               "font-semibold tracking-tight transition-colors hover:text-foreground",
-              pathname === "/" ? "text-foreground" : "text-foreground"
+              pathname === "/" ? "text-foreground" : "text-muted-foreground"
             )}
           >
             husnucan.dev
