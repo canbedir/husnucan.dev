@@ -2,16 +2,37 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { SiSpotify } from "react-icons/si";
 import type { NowPlaying as NowPlayingData } from "@/lib/spotify";
 
 const POLL_MS = 30000;
 
+function formatTime(ms: number) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(total / 60);
+  const seconds = total % 60;
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
+function EqualizerBars() {
+  return (
+    <span className="flex shrink-0 items-end gap-0.5" aria-hidden>
+      <span className="h-2 w-0.5 origin-bottom animate-[spotify-bar_0.9s_ease-in-out_infinite] rounded-full bg-emerald-500 motion-reduce:animate-none" />
+      <span className="h-3.5 w-0.5 origin-bottom animate-[spotify-bar_0.9s_ease-in-out_infinite_0.2s] rounded-full bg-emerald-500 motion-reduce:animate-none" />
+      <span className="h-2.5 w-0.5 origin-bottom animate-[spotify-bar_0.9s_ease-in-out_infinite_0.4s] rounded-full bg-emerald-500 motion-reduce:animate-none" />
+      <span className="h-1.5 w-0.5 origin-bottom animate-[spotify-bar_0.9s_ease-in-out_infinite_0.6s] rounded-full bg-emerald-500 motion-reduce:animate-none" />
+    </span>
+  );
+}
+
 export function NowPlaying() {
   const [track, setTrack] = useState<NowPlayingData>({ isPlaying: false });
+  const [fetchedAt, setFetchedAt] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
   const reduceMotion = useReducedMotion();
 
+  // Poll the endpoint.
   useEffect(() => {
     let active = true;
 
@@ -19,9 +40,12 @@ export function NowPlaying() {
       try {
         const res = await fetch("/api/now-playing");
         const data = (await res.json()) as NowPlayingData;
-        if (active) setTrack(data);
+        if (active) {
+          setTrack(data);
+          setFetchedAt(Date.now());
+        }
       } catch {
-        // ignore transient errors; keep the last known state
+        // keep last known state on transient errors
       }
     };
 
@@ -33,52 +57,124 @@ export function NowPlaying() {
     };
   }, []);
 
+  // Tick once a second so the progress bar advances between polls.
+  useEffect(() => {
+    if (!track.isPlaying) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [track.isPlaying]);
+
+  if (!track.isPlaying) return null;
+
+  const duration = track.durationMs ?? 0;
+  const elapsed =
+    duration > 0
+      ? Math.min((track.progressMs ?? 0) + (now - fetchedAt), duration)
+      : 0;
+  const percent = duration > 0 ? (elapsed / duration) * 100 : 0;
+
   return (
-    <AnimatePresence>
-      {track.isPlaying && (
-        <motion.a
-          href={track.songUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, scale: 0.8, x: -8 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          exit={{ opacity: 0, scale: 0.8, x: -8 }}
-          transition={{ type: "spring", stiffness: 300, damping: 24 }}
-          className="absolute left-full top-1/2 z-10 ml-3 flex max-w-[220px] -translate-y-1/2 items-center gap-2.5 rounded-full border border-border bg-card/90 py-1.5 pr-4 pl-1.5 shadow-sm backdrop-blur-sm"
-        >
-          {/* little tail pointing back at the avatar */}
-          <span className="absolute top-1/2 -left-1 size-2 -translate-y-1/2 rotate-45 border-b border-l border-border bg-card" />
+    <motion.a
+      href={track.songUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Listening to ${track.title} by ${track.artist} on Spotify`}
+      className="absolute bottom-1/2 left-full z-20 mb-3 ml-3"
+      style={{ transformOrigin: "bottom left" }}
+      initial={reduceMotion ? false : { opacity: 0, scale: 0.7, x: -6, y: 6 }}
+      animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+      transition={{ type: "spring", stiffness: 340, damping: 20 }}
+    >
+      {/* Thought-bubble tail: two dots trailing diagonally back to the avatar. */}
+      <span
+        aria-hidden
+        className="absolute -bottom-1 -left-1 size-2 rounded-full border border-border bg-card shadow-sm"
+      />
+      <span
+        aria-hidden
+        className="absolute -bottom-3 -left-3 size-1.5 rounded-full border border-border bg-card shadow-sm"
+      />
 
-          {track.albumImageUrl ? (
-            <motion.span
-              className="relative block size-8 shrink-0 overflow-hidden rounded-full ring-1 ring-border"
-              animate={reduceMotion ? undefined : { rotate: 360 }}
-              transition={{ duration: 8, ease: "linear", repeat: Infinity }}
-            >
-              <Image
-                src={track.albumImageUrl}
-                alt=""
-                fill
-                className="object-cover"
-              />
-            </motion.span>
-          ) : (
-            <SiSpotify className="size-8 shrink-0 text-[#1DB954]" />
-          )}
+      {/* Collapsed bubble */}
+      <motion.span
+        whileHover={reduceMotion ? undefined : { y: -1 }}
+        className="flex items-center gap-2 rounded-2xl border border-border bg-card/95 p-1.5 pr-3 shadow-lg backdrop-blur-sm"
+      >
+        {track.albumImageUrl ? (
+          <span className="relative block size-7 shrink-0 overflow-hidden rounded-lg ring-1 ring-border">
+            <Image
+              src={track.albumImageUrl}
+              alt=""
+              fill
+              className="object-cover"
+            />
+          </span>
+        ) : (
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15">
+            <SiSpotify className="size-4 text-emerald-500" />
+          </span>
+        )}
+        <EqualizerBars />
+      </motion.span>
 
-          <span className="flex min-w-0 flex-col leading-tight">
-            <span className="flex items-center gap-1.5">
-              <SiSpotify className="size-3 shrink-0 text-[#1DB954]" />
-              <span className="truncate text-sm font-semibold">
+      {/* Expanded card, revealed on hover of the avatar or the bubble */}
+      <span className="pointer-events-none absolute top-full left-0 z-30 mt-2.5 block w-72 max-w-[78vw] origin-top-left scale-95 opacity-0 transition duration-150 ease-out group-hover:scale-100 group-hover:opacity-100">
+        <span className="absolute -top-1 left-5 size-2.5 rotate-45 rounded-xs border-t border-l border-border bg-card" />
+        <span className="block rounded-2xl border border-border bg-card p-3.5 text-left shadow-xl">
+          <span className="mb-2.5 flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-emerald-500">
+            <SiSpotify className="size-3.5" />
+            Listening to Spotify
+          </span>
+
+          <span className="flex gap-3">
+            {track.albumImageUrl ? (
+              <span className="relative block size-14 shrink-0 overflow-hidden rounded-lg ring-1 ring-border">
+                <Image
+                  src={track.albumImageUrl}
+                  alt=""
+                  fill
+                  className="object-cover"
+                />
+              </span>
+            ) : (
+              <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15">
+                <SiSpotify className="size-6 text-emerald-500" />
+              </span>
+            )}
+
+            <span className="flex min-w-0 flex-col justify-center">
+              <span className="truncate text-sm font-semibold text-foreground">
                 {track.title}
               </span>
-            </span>
-            <span className="truncate text-xs text-muted-foreground">
-              {track.artist}
+              {track.artist && (
+                <span className="truncate text-xs text-muted-foreground">
+                  by {track.artist}
+                </span>
+              )}
+              {track.album && (
+                <span className="truncate text-xs text-muted-foreground">
+                  on {track.album}
+                </span>
+              )}
             </span>
           </span>
-        </motion.a>
-      )}
-    </AnimatePresence>
+
+          {duration > 0 && (
+            <span className="mt-3.5 block">
+              <span className="block h-1 w-full overflow-hidden rounded-full bg-foreground/10">
+                <span
+                  className="block h-full rounded-full bg-emerald-500"
+                  style={{ width: `${percent}%` }}
+                />
+              </span>
+              <span className="mt-1 flex justify-between text-[10px] tabular-nums text-muted-foreground">
+                <span>{formatTime(elapsed)}</span>
+                <span>{formatTime(duration)}</span>
+              </span>
+            </span>
+          )}
+        </span>
+      </span>
+    </motion.a>
   );
 }

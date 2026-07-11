@@ -13,6 +13,8 @@ export type NowPlaying = {
   album?: string;
   albumImageUrl?: string;
   songUrl?: string;
+  progressMs?: number;
+  durationMs?: number;
 };
 
 function getEnv() {
@@ -52,8 +54,10 @@ async function getAccessToken() {
 
 type SpotifyTrack = {
   is_playing: boolean;
+  progress_ms: number | null;
   item: {
     name: string;
+    duration_ms: number;
     artists: { name: string }[];
     album: { name: string; images: { url: string }[] };
     external_urls: { spotify: string };
@@ -85,5 +89,7 @@ export async function getNowPlaying(): Promise<NowPlaying> {
     album: song.item.album.name,
     albumImageUrl: song.item.album.images[0]?.url,
     songUrl: song.item.external_urls.spotify,
+    progressMs: song.progress_ms ?? 0,
+    durationMs: song.item.duration_ms,
   };
 }

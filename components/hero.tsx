@@ -7,10 +7,10 @@ export function Hero() {
   return (
     <section className="pt-12 pb-16 sm:pt-24 sm:pb-20">
       <Reveal>
-        {/* Non-clipping wrapper so the now-playing bubble can extend past the
-            avatar's rounded, overflow-hidden frame. */}
-        <div className="relative inline-block">
-          <div className="relative size-20 overflow-hidden rounded-full bg-secondary/20 ring-1 ring-border sm:size-24">
+        {/* Non-clipping group wrapper so the now-playing bubble can extend past
+            the avatar and reveal its card when the avatar is hovered. */}
+        <div className="group relative inline-block">
+          <div className="relative size-20 overflow-hidden rounded-full bg-secondary/10 ring-1 ring-border sm:size-24">
             <Image
               src={profile.avatar}
               alt={profile.name}

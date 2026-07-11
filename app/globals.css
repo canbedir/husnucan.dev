@@ -139,3 +139,14 @@
     scroll-behavior: auto;
   }
 }
+
+/* Spotify now-playing equalizer bars */
+@keyframes spotify-bar {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
