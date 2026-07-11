@@ -13,24 +13,10 @@ const funnelSans = Funnel_Sans({
   display: "swap",
 });
 
-const siteUrl = "https://husnucan.dev";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: "Can Bedir — Fullstack Developer",
-    template: "%s — Can Bedir",
-  },
-  description:
-    "Can Bedir is a self-taught fullstack developer building things from idea to launch.",
-  openGraph: {
-    title: "Can Bedir — Fullstack Developer",
-    description:
-      "Can Bedir is a self-taught fullstack developer building things from idea to launch.",
-    url: siteUrl,
-    siteName: "husnucan.dev",
-    type: "website",
-  },
+  // Same bare title on every page; no description or Open Graph, so shared
+  // links unfurl with nothing but the URL.
+  title: "husnucan.dev",
 };
 
 export default function RootLayout({

@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { SiGithub } from "react-icons/si";
@@ -6,11 +5,6 @@ import { Container } from "@/components/container";
 import { Reveal } from "@/components/motion/reveal";
 import { ProjectLogo } from "@/components/project-logo";
 import { projects, type Project } from "@/lib/content";
-
-export const metadata: Metadata = {
-  title: "Projects",
-  description: "Things Can Bedir has shipped, maintained, or kept around.",
-};
 
 function MetaLink({
   href,
