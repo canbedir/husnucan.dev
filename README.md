@@ -9,14 +9,15 @@ My personal site
 - **Framer Motion** for animation
 - **react-icons** / **lucide-react** for icons
 - **Spotify Web API** for now-playing, **GitHub contributions** for the activity graph
+- **Bun** as the package manager
 
 ## Getting started
 
 ```bash
 git clone https://github.com/canbedir/husnucan.dev.git
 cd husnucan.dev
-npm install
-npm run dev
+bun install
+bun dev
 ```
 
 Open [localhost:3000](http://localhost:3000).
