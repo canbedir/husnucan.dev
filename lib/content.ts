@@ -35,6 +35,7 @@ export const projects: Project[] = [
     description: "Record your screen entirely in the browser.",
     year: "2025",
     url: "https://kirmizi.app",
+    githubUrl: "https://github.com/canbedir/kirmizi",
     badge: { label: "Live", tone: "accent" },
     monogram: "K",
     logo: "/kirmizi-logo.webp",
@@ -48,10 +49,25 @@ export const projects: Project[] = [
       "Use your phone as a microphone for your computer over Wi-Fi or USB.",
     year: "2024",
     url: "https://microhone.com",
+    githubUrl: "https://github.com/microhone/microhone",
     badge: { label: "Live", tone: "accent" },
     monogram: "M",
     logo: "/microhone.png",
     logoStyle: "icon",
+    featured: true,
+  },
+  {
+    slug: "walltch",
+    name: "Walltch",
+    description:
+      "An addon-based media client for the desktop.",
+    year: "2024",
+    /* url: "https://walltch.com", */
+    githubUrl: "https://github.com/walltch-app/walltch",
+    badge: { label: "Live", tone: "accent" },
+    monogram: "W",
+    logo: "/walltch.png",
+    logoStyle: "mark",
     featured: true,
   },
 ];
