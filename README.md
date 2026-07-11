@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# husnucan.dev
 
-## Getting Started
+My personal site
 
-First, run the development server:
+## Tech
+
+- **Next.js** (App Router) + **TypeScript**
+- **Tailwind CSS v4** & **shadcn/ui** (Base UI)
+- **Framer Motion** for animation
+- **react-icons** / **lucide-react** for icons
+- **Spotify Web API** for now-playing, **GitHub contributions** for the activity graph
+
+## Getting started
 
 ```bash
+git clone https://github.com/canbedir/husnucan.dev.git
+cd husnucan.dev
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The now-playing bubble needs a Spotify app. Create `.env.local`:
 
-## Learn More
+```bash
+SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=
+SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/api/spotify/callback
+SPOTIFY_REFRESH_TOKEN=
+```
 
-To learn more about Next.js, take a look at the following resources:
+Get a refresh token (with the `user-read-currently-playing` scope) by visiting
+`/api/spotify/login` once and copying the value returned by the callback.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> Without these, the site runs fine — the bubble just stays hidden.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The GitHub activity graph needs no token (it uses a public contributions API).
