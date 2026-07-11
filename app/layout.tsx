@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 const funnelSans = Funnel_Sans({
   variable: "--font-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
           <TooltipProvider delay={120}>
             <SiteHeader />
             <main>{children}</main>
+            <SiteFooter />
           </TooltipProvider>
         </ThemeProvider>
       </body>
