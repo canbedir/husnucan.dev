@@ -83,19 +83,28 @@ export const experience: Experience[] = [
     company: "Crabs Media",
     role: "Frontend Developer Intern",
     period: "2024 — 2025",
+    url: "https://crabsmedia.com",
   },
 ];
 
+export const availability = {
+  period: "Now",
+  status: "Available for work",
+  detail: "Open to freelance and full-time roles.",
+};
+
 export const skills: string[] = [
   "React / Next.js",
-  "TypeScript / JavaScript (ES6+)",
-  "Tailwind CSS & design systems",
-  "Responsive design & accessibility",
-  "Motion & interaction (Framer Motion)",
+  "TypeScript",
+  "JavaScript (ES6+)",
+  "Tailwind CSS",
+  "Responsive design",
+  "Accessibility",
+  "Framer Motion",
   "Component architecture",
-  "REST API integration & data fetching",
-  "Node.js fundamentals",
-  "Git & collaborative workflows",
+  "REST APIs",
+  "Node.js",
+  "Git & workflows",
 ];
 
 export const profile = {

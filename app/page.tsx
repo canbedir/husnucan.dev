@@ -2,6 +2,7 @@ import { Container } from "@/components/container";
 import { Hero } from "@/components/hero";
 import { Spotlight } from "@/components/spotlight";
 import { Stack } from "@/components/stack";
+import { Experience } from "@/components/experience";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <Hero />
       <Spotlight />
       <Stack />
+      <Experience />
     </Container>
   );
 }
