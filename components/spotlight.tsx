@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ProjectLogo } from "@/components/project-logo";
@@ -37,7 +38,16 @@ export function Spotlight() {
       <Reveal>
         <h2 className="text-2xl font-bold tracking-tight">Spotlight</h2>
         <p className="mt-2 text-muted-foreground">
-          My pride and joy — the projects I care about a little too much.
+          The apple of my{" "}
+          <Image
+            src="/green-eye-accent.svg"
+            alt="eye"
+            width={328}
+            height={312}
+            unoptimized
+            className="inline-block h-[1.5em] w-auto -translate-y-1 select-none"
+          />{" "}
+          — the projects I care about a little too much.
         </p>
       </Reveal>
 
