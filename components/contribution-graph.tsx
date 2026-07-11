@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+import type { ContributionCell } from "@/lib/github";
 
-const WEEKS = 53;
 const DAYS = 7;
 
 // Tailwind classes per intensity level, tuned for both themes.
@@ -20,7 +21,7 @@ function hash(i: number) {
   return x - Math.floor(x);
 }
 
-function levelFor(i: number) {
+function seededLevel(i: number) {
   const f = hash(i);
   if (f < 0.55) return 0;
   if (f < 0.74) return 1;
@@ -29,37 +30,84 @@ function levelFor(i: number) {
   return 4;
 }
 
-function countFor(i: number, level: number) {
+function seededCount(i: number, level: number) {
   if (level === 0) return 0;
   return level * 3 + (Math.floor(hash(i + 1) * 6) - 2);
 }
 
+type Cell = {
+  i: number;
+  week: number;
+  level: number;
+  count: number;
+  date: string | null;
+  empty: boolean;
+};
+
 type Tip = { text: string; x: number; y: number };
 
-export function ContributionGraph() {
+const SEEDED_WEEKS = 53;
+
+export function ContributionGraph({ data }: { data?: ContributionCell[] | null }) {
   const [tip, setTip] = React.useState<Tip | null>(null);
+  const reduceMotion = useReducedMotion();
 
   // Grid fills column by column (grid-flow-col): index = week * 7 + day.
-  const cells = React.useMemo(
-    () =>
-      Array.from({ length: WEEKS * DAYS }, (_, i) => {
-        const level = levelFor(i);
-        return { i, level, count: countFor(i, level) };
-      }),
-    []
-  );
+  const cells = React.useMemo<Cell[]>(() => {
+    if (data && data.length) {
+      return data.map((cell, i) => ({
+        i,
+        week: Math.floor(i / DAYS),
+        level: cell?.level ?? 0,
+        count: cell?.count ?? 0,
+        date: cell?.date ?? null,
+        empty: cell === null,
+      }));
+    }
+    return Array.from({ length: SEEDED_WEEKS * DAYS }, (_, i) => {
+      const level = seededLevel(i);
+      return {
+        i,
+        week: Math.floor(i / DAYS),
+        level,
+        count: seededCount(i, level),
+        date: null,
+        empty: false,
+      };
+    });
+  }, [data]);
 
-  const showTip = (
-    e: React.MouseEvent<HTMLDivElement>,
-    cell: { i: number; count: number }
-  ) => {
-    const week = Math.floor(cell.i / DAYS);
-    const day = cell.i % DAYS;
-    const daysAgo = (WEEKS - 1 - week) * DAYS + (DAYS - 1 - day);
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    date.setDate(date.getDate() - daysAgo);
-    const iso = date.toISOString().slice(0, 10);
+  const weekCount = cells.length / DAYS;
+
+  // Each cell lights up with a delay tied to its column, producing a
+  // left-to-right sweep across the grid.
+  const cellVariants: Variants = {
+    hidden: { opacity: 0, scale: reduceMotion ? 1 : 0.4 },
+    visible: (week: number) => ({
+      opacity: 1,
+      scale: 1,
+      transition: {
+        delay: reduceMotion ? 0 : week * 0.02,
+        duration: 0.35,
+        ease: "easeOut",
+      },
+    }),
+  };
+
+  const showTip = (e: React.MouseEvent<HTMLDivElement>, cell: Cell) => {
+    if (cell.empty) return;
+
+    let iso = cell.date;
+    if (!iso) {
+      // Seeded fallback: derive a date from the cell's position.
+      const day = cell.i % DAYS;
+      const daysAgo = (weekCount - 1 - cell.week) * DAYS + (DAYS - 1 - day);
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - daysAgo);
+      iso = d.toISOString().slice(0, 10);
+    }
+
     const noun = cell.count === 1 ? "contribution" : "contributions";
     const rect = e.currentTarget.getBoundingClientRect();
     setTip({
@@ -72,18 +120,27 @@ export function ContributionGraph() {
   return (
     <div className="relative">
       <div className="overflow-x-auto pb-1">
-        <div
-          className="mx-auto grid w-fit grid-flow-col grid-rows-7 gap-[3px]"
+        <motion.div
+          className="mx-auto grid w-fit grid-flow-col grid-rows-7 gap-0.75"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-40px" }}
           onMouseLeave={() => setTip(null)}
         >
           {cells.map((cell) => (
-            <div
+            <motion.div
               key={cell.i}
+              custom={cell.week}
+              variants={cellVariants}
               onMouseEnter={(e) => showTip(e, cell)}
-              className={`size-2.5 rounded-[2px] ${LEVEL_CLASS[cell.level]}`}
+              className={
+                cell.empty
+                  ? "size-3 rounded-[3px] bg-transparent"
+                  : `size-3 rounded-[3px] ${LEVEL_CLASS[cell.level]}`
+              }
             />
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {tip && (
