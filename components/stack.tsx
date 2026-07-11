@@ -31,7 +31,7 @@ const stack: Tech[] = [
 
 export function Stack() {
   return (
-    <section className="py-16">
+    <section className="py-12 sm:py-16">
       <Reveal>
         <h2 className="text-2xl font-bold tracking-tight">My stack</h2>
       </Reveal>

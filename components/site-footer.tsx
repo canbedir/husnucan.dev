@@ -7,7 +7,7 @@ export async function SiteFooter() {
   const contributions = await getContributions();
 
   return (
-    <footer className="px-6 pb-24 pt-12">
+    <footer className="px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
       <Reveal className="mx-auto max-w-4xl">
         <ContributionGraph data={contributions} />
         <p className="mt-12 text-center">

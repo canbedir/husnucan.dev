@@ -36,7 +36,7 @@ function MetaLink({
 
 function ProjectRow({ project }: { project: Project }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-8">
+    <div className="flex items-start justify-between gap-4 py-7 sm:py-8">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2.5">
           <h2 className="font-semibold">{project.name}</h2>
@@ -60,14 +60,14 @@ function ProjectRow({ project }: { project: Project }) {
         </div>
       </div>
 
-      <ProjectLogo project={project} className="size-12" />
+      <ProjectLogo project={project} className="size-10 sm:size-12" />
     </div>
   );
 }
 
 export default function ProjectsPage() {
   return (
-    <Container className="py-16">
+    <Container className="py-12 sm:py-16">
       <Reveal>
         <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
         <p className="mt-2 text-muted-foreground">

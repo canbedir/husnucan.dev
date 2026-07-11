@@ -33,7 +33,7 @@ export function Spotlight() {
   const featured = projects.filter((p) => p.featured);
 
   return (
-    <section className="py-16">
+    <section className="py-12 sm:py-16">
       <Reveal>
         <h2 className="text-2xl font-bold tracking-tight">Spotlight</h2>
         <p className="mt-2 text-muted-foreground">

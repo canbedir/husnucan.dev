@@ -5,7 +5,7 @@ import { availability, experience } from "@/lib/content";
 
 export function Experience() {
   return (
-    <section className="py-16">
+    <section className="py-12 sm:py-16">
       <Reveal>
         <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
       </Reveal>
