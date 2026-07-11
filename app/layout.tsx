@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 
 const funnelSans = Funnel_Sans({
   variable: "--font-sans",
@@ -39,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${funnelSans.variable} h-full`} suppressHydrationWarning>
-      <body className="min-h-full">
+      <body className="flex min-h-full flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -48,7 +49,8 @@ export default function RootLayout({
         >
           <TooltipProvider delay={120}>
             <SiteHeader />
-            <main>{children}</main>
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
           </TooltipProvider>
         </ThemeProvider>
       </body>

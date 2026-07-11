@@ -1,21 +1,39 @@
-import { ContributionGraph } from "@/components/contribution-graph";
-import { Reveal } from "@/components/motion/reveal";
+import Link from "next/link";
+import { SiNextdotjs, SiGithub } from "react-icons/si";
+import { Container } from "@/components/container";
 import { profile } from "@/lib/content";
 
 export function SiteFooter() {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="px-6 pb-20 pt-10 sm:pb-24 sm:pt-12">
-      <Reveal className="mx-auto max-w-2xl">
-        <ContributionGraph />
-        <p className="mt-12 text-center">
-          <a
-            href={`mailto:${profile.email}`}
-            className="font-semibold transition-colors hover:text-muted-foreground"
+    <footer className="border-t border-border">
+      <Container className="flex h-16 items-center justify-between text-xs text-muted-foreground sm:text-sm">
+        <span>
+          © {year} {profile.shortName}
+        </span>
+
+        <div className="flex items-center gap-5">
+          <Link
+            href="https://nextjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
           >
-            {profile.email}
-          </a>
-        </p>
-      </Reveal>
+            Built with
+            <SiNextdotjs className="size-4" aria-label="Next.js" />
+          </Link>
+          <Link
+            href={profile.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+          >
+            Source on
+            <SiGithub className="size-4" aria-label="GitHub" />
+          </Link>
+        </div>
+      </Container>
     </footer>
   );
 }

@@ -109,8 +109,11 @@ export const skills: string[] = [
 
 export const profile = {
   name: "Can Bedir",
+  shortName: "Can",
   greeting: "Hi, I'm Can",
   tagline: "Self-taught fullstack developer who loves building things from idea to launch.",
   email: "me@husnucan.dev",
   avatar: "/pp.png",
+  // Repo shown as "Source on GitHub" in the footer — update if it differs.
+  sourceUrl: "https://github.com/canbedir/husnucan.dev",
 };
