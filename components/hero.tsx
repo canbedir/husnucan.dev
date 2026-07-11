@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
 import { NowPlaying } from "@/components/now-playing";
+import { Highlighter } from "@/components/ui/highlighter";
 import { profile } from "@/lib/content";
 
 export function Hero() {
@@ -31,7 +32,34 @@ export function Hero() {
 
       <Reveal delay={0.16}>
         <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
-          {profile.tagline}
+          {profile.tagline.before}
+          {/*
+            rough-notation injects an absolutely-positioned SVG next to the
+            annotated span. `relative` pins it to this wrapper — otherwise its
+            containing block is Reveal's motion.div, which drops its transform
+            when the animation ends, shifting the stroke off-screen.
+
+            Also keep this subtree free of state: React would wipe the injected
+            SVG on re-render, so the stroke takes its color from currentColor
+            instead of a useTheme hook. That's why the wrapper carries
+            text-foreground (it colors the stroke) while the text itself stays
+            muted like the rest of the sentence.
+          */}
+          <span className="relative inline-block text-foreground">
+            <Highlighter
+              action="underline"
+              color="currentColor"
+              strokeWidth={2}
+              iterations={2}
+              padding={2}
+              animationDuration={700}
+            >
+              <span className="text-white/75">
+                {profile.tagline.highlight}
+              </span>
+            </Highlighter>
+          </span>
+          {profile.tagline.after}
         </p>
       </Reveal>
 

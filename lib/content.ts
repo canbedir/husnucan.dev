@@ -111,7 +111,12 @@ export const profile = {
   name: "Can Bedir",
   shortName: "Can",
   greeting: "Hi, I'm Can",
-  tagline: "Self-taught fullstack developer who loves building things from idea to launch.",
+  // Split so the middle phrase can carry the hand-drawn underline.
+  tagline: {
+    before: "Self-taught ",
+    highlight: "fullstack developer",
+    after: " who loves building things from idea to launch.",
+  },
   email: "me@husnucan.dev",
   avatar: "/pp.png",
   // Repo shown as "Source on GitHub" in the footer — update if it differs.
