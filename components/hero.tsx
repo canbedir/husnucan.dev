@@ -54,7 +54,7 @@ export function Hero() {
               padding={2}
               animationDuration={700}
             >
-              <span className="text-white/75">
+              <span className="text-black/75 dark:text-white/75">
                 {profile.tagline.highlight}
               </span>
             </Highlighter>
