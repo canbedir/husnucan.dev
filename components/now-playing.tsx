@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { SiSpotify } from "react-icons/si";
+import { cn } from "@/lib/utils";
 import type { NowPlaying as NowPlayingData } from "@/lib/spotify";
 
 const POLL_MS = 30000;
@@ -30,7 +31,29 @@ export function NowPlaying() {
   const [track, setTrack] = useState<NowPlayingData>({ isPlaying: false });
   const [fetchedAt, setFetchedAt] = useState(0);
   const [now, setNow] = useState(() => Date.now());
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLAnchorElement>(null);
   const reduceMotion = useReducedMotion();
+
+  // Touch devices have no hover, so the card is opened by tapping instead.
+  // Tapping anywhere else closes it again.
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // First tap on a touch device reveals the details rather than jumping
+    // straight to Spotify; a second tap follows the link.
+    if (!open && window.matchMedia("(hover: none)").matches) {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
 
   // Poll the endpoint.
   useEffect(() => {
@@ -75,10 +98,13 @@ export function NowPlaying() {
 
   return (
     <motion.a
+      ref={rootRef}
       href={track.songUrl}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={handleClick}
       aria-label={`Listening to ${track.title} by ${track.artist} on Spotify`}
+      aria-expanded={open}
       className="absolute bottom-1/2 left-full z-20 mb-3 ml-3"
       style={{ transformOrigin: "bottom left" }}
       initial={reduceMotion ? false : { opacity: 0, scale: 0.7, x: -6, y: 6 }}
@@ -117,9 +143,18 @@ export function NowPlaying() {
         <EqualizerBars />
       </motion.span>
 
-      {/* Expanded card, revealed on hover of the avatar or the bubble */}
-      <span className="pointer-events-none absolute top-full left-0 z-30 mt-2.5 block w-72 max-w-[78vw] origin-top-left scale-95 opacity-0 transition duration-150 ease-out group-hover:scale-100 group-hover:opacity-100">
-        <span className="absolute -top-1 left-5 size-2.5 rotate-45 rounded-xs border-t border-l border-border bg-card" />
+      {/* Expanded card: hover on pointer devices, tap-to-open on touch. On
+          narrow screens it shifts left so it doesn't run off the edge. */}
+      <span
+        className={cn(
+          "absolute top-full left-0 z-30 mt-2.5 block w-72 max-w-[calc(100vw-3rem)] origin-top-left transition duration-150 ease-out max-sm:-translate-x-24",
+          "pointer-events-none group-hover:scale-100 group-hover:opacity-100",
+          open
+            ? "pointer-events-auto scale-100 opacity-100"
+            : "scale-95 opacity-0"
+        )}
+      >
+        <span className="absolute -top-1 left-5 size-2.5 rotate-45 rounded-xs border-t border-l border-border bg-card max-sm:left-29" />
         <span className="block rounded-2xl border border-border bg-card p-3.5 text-left shadow-xl">
           <span className="mb-2.5 flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-emerald-500">
             <SiSpotify className="size-3.5" />
