@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
 import { FaGithub } from "react-icons/fa";
 
 type ContributionDay = {
@@ -32,7 +31,6 @@ export function ContributionGraph() {
   // a consistent size and always fill the row without needing to scroll.
   const [visibleWeeks, setVisibleWeeks] = useState(20);
   const containerRef = useRef<HTMLDivElement>(null);
-  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     let active = true;
@@ -98,24 +96,13 @@ export function ContributionGraph() {
                 {Array.from({ length: 7 }).map((_, dayIndex) => (
                   <div
                     key={dayIndex}
-                    className="aspect-square w-full animate-pulse rounded-sm bg-zinc-200 dark:bg-[#1a1d20]"
+                    className={`aspect-square w-full rounded-sm ${LEVEL_CLASS[0]}`}
                   />
                 ))}
               </div>
             ))
           : weeks.map((week, weekIndex) => (
-              <motion.div
-                key={weekIndex}
-                className="flex flex-1 flex-col gap-1"
-                initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.4 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{
-                  delay: reduceMotion ? 0 : weekIndex * 0.025,
-                  duration: 0.3,
-                  ease: "easeOut",
-                }}
-              >
+              <div key={weekIndex} className="flex flex-1 flex-col gap-1">
                 {week.map((day) => (
                   <div
                     key={day.date}
@@ -123,7 +110,7 @@ export function ContributionGraph() {
                     className={`aspect-square w-full rounded-sm transition-transform hover:scale-110 ${LEVEL_CLASS[day.level]}`}
                   />
                 ))}
-              </motion.div>
+              </div>
             ))}
       </div>
     </div>
