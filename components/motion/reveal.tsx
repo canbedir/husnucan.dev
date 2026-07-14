@@ -12,8 +12,9 @@ type RevealProps = {
 };
 
 /**
- * Fades and lifts its children into view once, on scroll. Honors
- * prefers-reduced-motion by rendering the content in its final state.
+ * Fades and lifts its children in once, on page load — not on scroll, so
+ * nothing pops in as you move down the page. Honors prefers-reduced-motion by
+ * rendering the content in its final state.
  */
 export function Reveal({ children, className, delay = 0, as = "div" }: RevealProps) {
   const reduceMotion = useReducedMotion();
@@ -36,8 +37,7 @@ export function Reveal({ children, className, delay = 0, as = "div" }: RevealPro
     <MotionTag
       className={cn(className)}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      animate="visible"
       variants={variants}
     >
       {children}
