@@ -31,13 +31,13 @@ const stack: Tech[] = [
 
 export function Stack() {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="pt-20 sm:pt-28">
       <Reveal>
-        <h2 className="text-2xl font-bold tracking-tight">My stack</h2>
+        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">My stack</h2>
       </Reveal>
 
       <Reveal delay={0.08}>
-        <ul className="mt-8 grid grid-cols-4 gap-3 sm:grid-cols-8">
+        <ul className="mt-6 grid grid-cols-4 gap-3 sm:grid-cols-8">
           {stack.map(({ name, icon: Icon, color }) => (
             <li key={name}>
               <Tooltip>

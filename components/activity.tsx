@@ -3,7 +3,7 @@ import { Reveal } from "@/components/motion/reveal";
 
 export function Activity() {
   return (
-    <section className="pt-4 pb-16 sm:pb-20">
+    <section className="pt-20 pb-20 sm:pt-28 sm:pb-28">
       <Reveal>
         <ContributionGraph />
       </Reveal>

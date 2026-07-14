@@ -5,14 +5,14 @@ import { availability, experience } from "@/lib/content";
 
 export function Experience() {
   return (
-    <section className="py-12 sm:py-16">
+    <section className="pt-20 sm:pt-28">
       <Reveal>
-        <h2 className="text-2xl font-bold tracking-tight">Experience</h2>
+        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Experience</h2>
       </Reveal>
 
       {/* Vertical timeline — the line encodes chronology and scales as more
           roles are added. */}
-      <div className="relative mt-10 pl-7">
+      <div className="relative mt-6 pl-7">
         <span
           aria-hidden
           className="absolute left-0 top-2 h-[calc(100%-1rem)] w-px bg-border"

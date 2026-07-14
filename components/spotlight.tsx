@@ -34,9 +34,9 @@ export function Spotlight() {
   const featured = projects.filter((p) => p.featured);
 
   return (
-    <section className="py-12 sm:py-16">
+    <section className="pt-20 sm:pt-28">
       <Reveal>
-        <h2 className="text-2xl font-bold tracking-tight">Spotlight</h2>
+        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Spotlight</h2>
         <p className="mt-2 text-muted-foreground">
           The apple of my{" "}
           <Image
@@ -51,7 +51,7 @@ export function Spotlight() {
         </p>
       </Reveal>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {featured.map((project, i) => (
           <SpotlightCard key={project.slug} project={project} delay={i * 0.08} />
         ))}

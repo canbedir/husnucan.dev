@@ -6,7 +6,7 @@ import { profile } from "@/lib/content";
 
 export function Hero() {
   return (
-    <section className="pt-12 pb-16 sm:pt-24 sm:pb-20">
+    <section className="pt-12 sm:pt-24">
       <Reveal>
         {/* Non-clipping group wrapper so the now-playing bubble can extend past
             the avatar and reveal its card when the avatar is hovered. */}
