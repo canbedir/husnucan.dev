@@ -62,8 +62,8 @@ export const projects: Project[] = [
     description:
       "Use your phone as a microphone for your computer over Wi-Fi or USB.",
     detail:
-      "It registers as a real system microphone, so every app on the computer picks it up with no setup. A Rust desktop host and an Android client speak one shared wire protocol.",
-    tech: ["Rust", "Tauri", "Kotlin", "Jetpack Compose"],
+      "It feeds a virtual audio device, so any app on the machine can pick it up as a microphone. A Rust host and an Android client speak one shared wire protocol — Opus over UDP, AES-256-GCM, QR pairing.",
+    tech: ["Rust", "Tauri", "Kotlin", "Jetpack Compose", "Opus", "mDNS"],
     year: "2024",
     url: "https://microhone.com",
     githubUrl: "https://github.com/microhone/microhone",
