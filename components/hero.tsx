@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
 import { NowPlaying } from "@/components/now-playing";
 import { Highlighter } from "@/components/ui/highlighter";
+import { Socials } from "@/components/socials";
 import { profile } from "@/lib/content";
 
 export function Hero() {
@@ -64,12 +65,16 @@ export function Hero() {
       </Reveal>
 
       <Reveal delay={0.24}>
-        <a
-          href={`mailto:${profile.email}`}
-          className="mt-8 inline-block font-semibold text-foreground underline decoration-border decoration-2 underline-offset-4 transition-colors hover:decoration-foreground"
-        >
-          {profile.email}
-        </a>
+        <div className="mt-8 flex items-center gap-4">
+          <a
+            href={`mailto:${profile.email}`}
+            className="font-semibold text-foreground underline decoration-border decoration-2 underline-offset-4 transition-colors hover:decoration-foreground"
+          >
+            {profile.email}
+          </a>
+          <span aria-hidden className="h-4 w-px bg-border" />
+          <Socials />
+        </div>
       </Reveal>
     </section>
   );
