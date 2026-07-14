@@ -93,20 +93,6 @@ export const availability = {
   detail: "Open to freelance and full-time roles.",
 };
 
-export const skills: string[] = [
-  "React / Next.js",
-  "TypeScript",
-  "JavaScript (ES6+)",
-  "Tailwind CSS",
-  "Responsive design",
-  "Accessibility",
-  "Framer Motion",
-  "Component architecture",
-  "REST APIs",
-  "Node.js",
-  "Git & workflows",
-];
-
 export const profile = {
   name: "Can Bedir",
   shortName: "Can",
