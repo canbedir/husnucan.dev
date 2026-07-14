@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Funnel_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,10 +12,28 @@ const funnelSans = Funnel_Sans({
   display: "swap",
 });
 
+const siteUrl = "https://husnucan.dev";
+const description =
+  "canbedir — full-stack developer, building things from idea to launch.";
+
 export const metadata: Metadata = {
-  // Same bare title on every page; no description or Open Graph, so shared
-  // links unfurl with nothing but the URL.
+  metadataBase: new URL(siteUrl),
+  // The tab always reads "husnucan.dev"; the share card carries the longer line.
   title: "husnucan.dev",
+  description,
+  openGraph: {
+    title: "husnucan.dev — full-stack developer",
+    description,
+    url: siteUrl,
+    siteName: "husnucan.dev",
+    type: "website",
+  },
+  // Text-only card: no image, by choice.
+  twitter: {
+    card: "summary",
+    title: "husnucan.dev — full-stack developer",
+    description,
+  },
 };
 
 export default function RootLayout({
@@ -35,6 +54,7 @@ export default function RootLayout({
         >
           <TooltipProvider delay={120}>{children}</TooltipProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
