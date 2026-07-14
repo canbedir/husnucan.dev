@@ -30,31 +30,38 @@ function MetaLink({
 
 function ProjectRow({ project }: { project: Project }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-7 sm:py-8">
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <h2 className="font-semibold">{project.name}</h2>
-        </div>
-
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          {project.description}
-        </p>
-
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-          {project.url && (
-            <MetaLink href={project.url} icon={ArrowUpRight}>
-              Website
-            </MetaLink>
-          )}
-          {project.githubUrl && (
-            <MetaLink href={project.githubUrl} icon={SiGithub}>
-              GitHub
-            </MetaLink>
-          )}
-        </div>
+    <div className="py-7 sm:py-8">
+      {/* Logo sits with the name, so it reads as the project's identity rather
+          than floating alone beside a tall block of text. */}
+      <div className="flex items-center gap-3">
+        <ProjectLogo project={project} className="size-9" />
+        <h2 className="font-semibold">{project.name}</h2>
       </div>
 
-      <ProjectLogo project={project} className="size-10 sm:size-12" />
+      {/* The lead line, then the sentence that says why it was worth building. */}
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+        {project.description}
+        {project.detail ? ` ${project.detail}` : null}
+      </p>
+
+      {project.tech && (
+        <p className="mt-3 text-xs text-muted-foreground/70">
+          {project.tech.join(" · ")}
+        </p>
+      )}
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+        {project.url && (
+          <MetaLink href={project.url} icon={ArrowUpRight}>
+            Website
+          </MetaLink>
+        )}
+        {project.githubUrl && (
+          <MetaLink href={project.githubUrl} icon={SiGithub}>
+            GitHub
+          </MetaLink>
+        )}
+      </div>
     </div>
   );
 }

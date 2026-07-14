@@ -3,7 +3,12 @@
 export type Project = {
   slug: string;
   name: string;
+  /** One line. Used everywhere, including the homepage Spotlight. */
   description: string;
+  /** A second sentence, shown only on the projects page: what makes it worth building. */
+  detail?: string;
+  /** Notable pieces of the stack, rendered as a plain dot-separated line. */
+  tech?: string[];
   year: string;
   /** Live site URL. */
   url?: string;
@@ -33,6 +38,15 @@ export const projects: Project[] = [
     slug: "kirmizi",
     name: "Kırmızı",
     description: "Record your screen entirely in the browser.",
+    detail:
+      "No account, no upload, no watermark — the file is built on your device and never touches a server.",
+    tech: [
+      "Next.js",
+      "TypeScript",
+      "MediaRecorder",
+      "Web Audio API",
+      "ffmpeg.wasm",
+    ],
     year: "2025",
     url: "https://kirmizi.app",
     githubUrl: "https://github.com/canbedir/kirmizi",
@@ -47,6 +61,9 @@ export const projects: Project[] = [
     name: "Microhone",
     description:
       "Use your phone as a microphone for your computer over Wi-Fi or USB.",
+    detail:
+      "It registers as a real system microphone, so every app on the computer picks it up with no setup. A Rust desktop host and an Android client speak one shared wire protocol.",
+    tech: ["Rust", "Tauri", "Kotlin", "Jetpack Compose"],
     year: "2024",
     url: "https://microhone.com",
     githubUrl: "https://github.com/microhone/microhone",
@@ -59,8 +76,10 @@ export const projects: Project[] = [
   {
     slug: "walltch",
     name: "Walltch",
-    description:
-      "An addon-based media client for the desktop.",
+    description: "A desktop media client in the vein of Stremio.",
+    detail:
+      "It speaks the Stremio addon protocol, so the addons you already use just work. A neutral player: it hosts and indexes nothing itself.",
+    tech: ["Rust", "Tauri", "React", "mpv"],
     year: "2024",
     /* url: "https://walltch.com", */
     githubUrl: "https://github.com/walltch-app/walltch",
