@@ -1,11 +1,16 @@
 import Link from "next/link";
 import type { IconType } from "react-icons";
-import { SiGithub, SiHackerone, SiDiscord } from "react-icons/si";
+import { SiGithub, SiHackerone, SiDiscord, SiX } from "react-icons/si";
 
 type Social = { name: string; href: string; icon: IconType };
 
 const socials: Social[] = [
   { name: "GitHub", href: "https://github.com/canbedir", icon: SiGithub },
+  {
+    name: "X",
+    href: "https://x.com/canhix",
+    icon: SiX,
+  },
   {
     name: "HackerOne",
     href: "https://hackerone.com/husnucan",
